@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Font families */
+    --font-heading: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* shadcn/ui light theme (not used, but defined) */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 24.6 95% 53.1%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 24.6 95% 53.1%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Industrial dark theme */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 6%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 24.6 95% 53.1%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 24.6 95% 53.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+
+  code, pre {
+    @apply font-mono;
+  }
+}
+
+@layer components {
+  /* Industrial button styles */
+  .btn-industrial {
+    @apply relative overflow-hidden bg-safety text-white font-heading font-semibold;
+    @apply px-8 py-4 rounded-lg transition-all duration-300;
+    @apply hover:bg-safety-light hover:shadow-[0_0_30px_rgba(234,88,12,0.4)];
+    @apply active:scale-[0.98] active:shadow-[0_0_20px_rgba(234,88,12,0.6)];
+  }
+
+  .btn-industrial::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    @apply -translate-x-full transition-transform duration-500;
+  }
+
+  .btn-industrial:hover::before {
+    @apply translate-x-full;
+  }
+
+  /* Industrial card styles */
+  .card-industrial {
+    @apply relative bg-slate-900/50 border border-slate-700/50 rounded-xl;
+    @apply backdrop-blur-sm transition-all duration-300;
+    @apply hover:border-safety/30 hover:shadow-[0_0_40px_rgba(234,88,12,0.1)];
+  }
+
+  /* Industrial input styles */
+  .input-industrial {
+    @apply bg-slate-900/80 border border-slate-700 rounded-lg;
+    @apply text-slate-100 placeholder:text-slate-500;
+    @apply focus:border-safety focus:ring-2 focus:ring-safety/20;
+    @apply transition-all duration-200;
+  }
+
+  /* Glow effect for hero elements */
+  .glow-orange {
+    @apply relative;
+  }
+
+  .glow-orange::after {
+    content: '';
+    @apply absolute -inset-1 bg-safety/20 rounded-xl blur-xl -z-10;
+    @apply opacity-0 transition-opacity duration-500;
+  }
+
+  .glow-orange:hover::after {
+    @apply opacity-100;
+  }
+
+  /* Grid pattern overlay */
+  .grid-overlay {
+    background-image: 
+      linear-gradient(rgba(234, 88, 12, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(234, 88, 12, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Noise texture overlay */
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+  }
+
+  /* Animated gradient background */
+  .gradient-animate {
+    background: linear-gradient(
+      135deg,
+      #0f172a 0%,
+      #1e293b 25%,
+      #0f172a 50%,
+      #1e293b 75%,
+      #0f172a 100%
+    );
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Section divider */
+  .divider-industrial {
+    @apply h-px bg-gradient-to-r from-transparent via-safety/30 to-transparent;
+  }
+
+  /* Status badge styles */
+  .badge-industrial {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+    @apply border backdrop-blur-sm;
+  }
+
+  /* Mobile bottom nav */
+  .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-lg;
+    @apply border-t border-slate-700/50 px-4 py-2;
+    @apply safe-area-inset-bottom;
+  }
+
+  /* Desktop sidebar */
+  .sidebar-industrial {
+    @apply fixed left-0 top-0 h-screen w-64 bg-slate-900;
+    @apply border-r border-slate-700/50 flex flex-col;
+  }
+}
+
+@layer utilities {
+  /* Safe area insets for mobile */
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* Text gradient */
+  .text-gradient-orange {
+    @apply bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600;
+    @apply bg-clip-text text-transparent;
+  }
+
+  /* Staggered animation delays */
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
