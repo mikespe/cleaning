@@ -301,7 +301,7 @@ export default function ProjectsPage() {
                 <div className="space-y-2">
                   <Label>Phase</Label>
                   <Select
-                    value={formData.phase}
+                    value={formData.phase ?? undefined}
                     onValueChange={(value) =>
                       setFormData({ ...formData, phase: value as Project["phase"] })
                     }

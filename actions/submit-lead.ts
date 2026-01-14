@@ -58,7 +58,7 @@ export async function submitLead(formData: LeadFormSchema): Promise<ActionRespon
 
     return {
       success: true,
-      data: { id: lead.id },
+      data: { id: lead?.id ?? '' },
     }
   } catch (error) {
     console.error('Submit lead error:', error)
