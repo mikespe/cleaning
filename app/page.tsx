@@ -174,9 +174,9 @@ export default function LandingPage() {
               variants={fadeInUp}
               className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-8"
             >
-              Construction cleaning run by a former Super who knows the phases.
+              Post-construction cleaning by a former Super who speaks your language.
               <br className="hidden sm:block" />
-              Rough cleans, final cleans, and everything in between.
+              No more explaining what "ready for paint" means. No more failed inspections from dust in mechanical rooms.
             </motion.p>
 
             {/* Trust Badge */}
@@ -256,28 +256,32 @@ export default function LandingPage() {
               {
                 title: 'Rough Clean',
                 description:
-                  'Post-framing debris removal. Prep for drywall and MEP.',
+                  'Heavy debris, drywall dust, and construction waste removal. Protects MEP systems from contamination.',
+                includes: ['Debris removal', 'Dust control', 'Floor sweeping', 'MEP protection'],
                 icon: Building2,
                 color: 'from-orange-500/20 to-orange-600/5',
               },
               {
                 title: 'Final Clean',
                 description:
-                  'Inspection-ready surfaces. Windows, floors, fixtures.',
+                  'Inspection-ready finish. All surfaces, windows, and fixtures cleaned to municipal standards.',
+                includes: ['Window washing', 'Floor scrubbing', 'Fixture detailing', 'Paint splatter removal'],
                 icon: Sparkles,
                 color: 'from-cyan-500/20 to-cyan-600/5',
               },
               {
                 title: 'Punch List',
                 description:
-                  'Touch-ups and detail work. CO-ready verification.',
+                  'Detail work and corrections. Addresses inspector comments and prepares for CO approval.',
+                includes: ['Touch-ups', 'Detail cleaning', 'Inspector notes', 'CO prep'],
                 icon: CheckCircle2,
                 color: 'from-green-500/20 to-green-600/5',
               },
               {
                 title: 'Turnover',
                 description:
-                  'Move-in ready. White-glove finish for new occupants.',
+                  'Move-in ready white-glove clean. Removes construction residue, ensures tenant-ready presentation.',
+                includes: ['Deep clean', 'Dust removal', 'Odor elimination', 'Final walkthrough'],
                 icon: Star,
                 color: 'from-purple-500/20 to-purple-600/5',
               },
@@ -301,9 +305,73 @@ export default function LandingPage() {
                 <h3 className="font-heading font-semibold text-lg text-slate-100 mb-2">
                   {service.title}
                 </h3>
-                <p className="text-sm text-slate-400">{service.description}</p>
+                <p className="text-sm text-slate-400 mb-4">{service.description}</p>
+                <div className="space-y-1">
+                  {service.includes.map((item) => (
+                    <div key={item} className="flex items-center gap-2 text-xs text-slate-500">
+                      <CheckCircle2 className="w-3 h-3 text-safety flex-shrink-0" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Health & Safety Section */}
+      <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-100 mb-6">
+                Construction Dust Isn't Just Unsightly—
+                <span className="text-gradient-orange"> It's Hazardous</span>
+              </h2>
+              <div className="space-y-4 text-slate-400">
+                <p>
+                  Drywall particulates, silica dust, paint fumes, adhesive residue—post-construction sites are filled with airborne contaminants that can delay occupancy and pose health risks.
+                </p>
+                <p>
+                  Unlike residential cleaners, we understand proper dust containment, ventilation requirements, and the difference between "looks clean" and "tests clean."
+                </p>
+                <p className="font-medium text-slate-300">
+                  Our process removes hazardous particulates before they settle into HVAC systems, compromise indoor air quality, or trigger inspector flags.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-2 gap-4"
+            >
+              {[
+                { label: 'Silica Dust', danger: 'OSHA hazard' },
+                { label: 'VOCs & Fumes', danger: 'Air quality risk' },
+                { label: 'Metal Shavings', danger: 'Injury risk' },
+                { label: 'Chemical Residue', danger: 'Contamination' },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="card-industrial p-6 text-center"
+                >
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                    <span className="text-xl">⚠️</span>
+                  </div>
+                  <h4 className="font-semibold text-slate-100 mb-1">
+                    {item.label}
+                  </h4>
+                  <p className="text-xs text-red-400">{item.danger}</p>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
@@ -440,19 +508,19 @@ export default function LandingPage() {
                 icon: Clock,
                 title: '24-Hour Response',
                 description:
-                  "We know schedules slip. When you need us, we're there – fast.",
+                  "Schedule slipped? Inspector coming tomorrow? We mobilize same-day for rush jobs. Your timeline is our priority.",
               },
               {
                 icon: Shield,
-                title: 'Insured & Bonded',
+                title: 'Fully Insured & Bonded',
                 description:
-                  'Full coverage. No liability headaches for your project.',
+                  '$2M general liability coverage. Workers comp included. Zero risk to your project or certificate of occupancy.',
               },
               {
                 icon: CheckCircle2,
-                title: 'Inspection Guarantee',
+                title: 'Inspection Pass Guarantee',
                 description:
-                  "If it doesn't pass inspection, we come back. No extra charge.",
+                  "If your site doesn't pass inspection due to cleanliness, we return immediately at no charge. That's our promise.",
               },
             ].map((item, i) => (
               <motion.div
@@ -476,6 +544,109 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing Estimates Section */}
+      <section className="py-24 bg-slate-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-100 mb-4">
+              Transparent Pricing Estimates
+            </h2>
+            <p className="text-slate-400 max-w-2xl mx-auto">
+              Every project is unique, but here's what you can expect. Final pricing depends on site conditions, timeline, and specific requirements.
+            </p>
+          </motion.div>
+
+          {/* Pricing Table */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="overflow-x-auto"
+          >
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden border border-slate-800 rounded-2xl">
+                <table className="min-w-full divide-y divide-slate-800">
+                  <thead className="bg-slate-900/50">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        Square Footage
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        Rough Clean
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        Final Clean
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        Punch/Turnover
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {[
+                      { range: '1,000 - 2,500 sq ft', rough: '2 crew, 3-4 hrs', final: '2 crew, 4-6 hrs', punch: '1-2 crew, 2-3 hrs' },
+                      { range: '2,500 - 5,000 sq ft', rough: '3 crew, 4-6 hrs', final: '3 crew, 6-8 hrs', punch: '2 crew, 3-4 hrs' },
+                      { range: '5,000 - 10,000 sq ft', rough: '4 crew, 6-8 hrs', final: '4 crew, 8-10 hrs', punch: '2-3 crew, 4-6 hrs' },
+                      { range: '10,000+ sq ft', rough: 'Custom quote', final: 'Custom quote', punch: 'Custom quote' },
+                    ].map((row, i) => (
+                      <tr key={i} className="bg-slate-900/30">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-100">
+                          {row.range}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-400">
+                          {row.rough}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-400">
+                          {row.final}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-400">
+                          {row.punch}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Pricing Notes */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 grid md:grid-cols-3 gap-6"
+          >
+            <div className="card-industrial p-6">
+              <h4 className="font-semibold text-slate-100 mb-2">What's Included</h4>
+              <ul className="text-sm text-slate-400 space-y-1">
+                <li>• All equipment & supplies</li>
+                <li>• Waste removal & disposal</li>
+                <li>• Site photos for your records</li>
+                <li>• Inspection-ready guarantee</li>
+              </ul>
+            </div>
+            <div className="card-industrial p-6">
+              <h4 className="font-semibold text-slate-100 mb-2">Rush Service Available</h4>
+              <p className="text-sm text-slate-400">
+                Need it done faster? We can mobilize same-day for emergency cleans. Contact us for rush pricing.
+              </p>
+            </div>
+            <div className="card-industrial p-6">
+              <h4 className="font-semibold text-slate-100 mb-2">Volume Discounts</h4>
+              <p className="text-sm text-slate-400">
+                Multiple units or ongoing projects? Ask about our preferred GC rates and package pricing.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Lead Form Section */}
       <section
         ref={formRef}
@@ -494,14 +665,13 @@ export default function LandingPage() {
               viewport={{ once: true }}
             >
               <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-100 mb-6">
-                Ready for a Clean That
+                Get Your CO Faster
                 <br />
-                <span className="text-gradient-orange">Passes Inspection?</span>
+                <span className="text-gradient-orange">With a Super-Verified Clean</span>
               </h2>
 
               <p className="text-slate-400 mb-8">
-                Fill out the form and Dave will personally reach out within 24
-                hours to schedule a site walk or discuss your project.
+                Request a free site walk and transparent quote. Dave personally reviews every project—no sales reps, no runarounds. If your site is in Northern NJ and you need it done right, we'll be there.
               </p>
 
               <div className="space-y-4">
