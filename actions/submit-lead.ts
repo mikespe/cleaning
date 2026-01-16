@@ -1,7 +1,7 @@
 'use server'
 
 import { Resend } from 'resend'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import { leadFormSchema, type LeadFormSchema } from '@/lib/validations'
 import type { ActionResponse } from '@/types'
 
@@ -19,8 +19,8 @@ export async function submitLead(formData: LeadFormSchema): Promise<ActionRespon
     // Validate the form data
     const validatedData = leadFormSchema.parse(formData)
 
-    // Create Supabase client
-    const supabase = await createServerSupabaseClient()
+    // Create Supabase service client (bypasses RLS for public form submissions)
+    const supabase = await createServiceClient()
 
     // Insert lead into database
     const { data: lead, error: dbError } = await supabase

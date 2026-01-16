@@ -31,7 +31,7 @@ BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 CREATE TRIGGER update_profiles_updated_at
     BEFORE UPDATE ON profiles
@@ -151,59 +151,59 @@ ALTER TABLE assignments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 
 -- Helper function to check user role
-CREATE OR REPLACE FUNCTION auth.user_role()
+CREATE OR REPLACE FUNCTION public.user_role()
 RETURNS TEXT AS $$
-    SELECT role FROM profiles WHERE id = auth.uid();
-$$ LANGUAGE sql SECURITY DEFINER;
+    SELECT role FROM public.profiles WHERE id = auth.uid();
+$$ LANGUAGE sql SECURITY DEFINER SET search_path = '';
 
 -- =====================================================
 -- PROFILES POLICIES
+-- Consolidated to avoid multiple permissive policies
 -- =====================================================
 
--- Users can view their own profile
-CREATE POLICY "Users can view own profile"
+-- Single SELECT policy: Users can view own profile OR admins can view all
+CREATE POLICY "profiles_select_policy"
     ON profiles FOR SELECT
-    USING (auth.uid() = id);
+    USING (
+        (select auth.uid()) = id
+        OR public.user_role() = 'admin'
+    );
 
--- Admins can view all profiles
-CREATE POLICY "Admins can view all profiles"
-    ON profiles FOR SELECT
-    USING (auth.user_role() = 'admin');
-
--- Users can update their own profile (except role)
-CREATE POLICY "Users can update own profile"
+-- Single UPDATE policy: Users can update own profile OR admins can update all
+CREATE POLICY "profiles_update_policy"
     ON profiles FOR UPDATE
-    USING (auth.uid() = id)
-    WITH CHECK (auth.uid() = id);
+    USING (
+        (select auth.uid()) = id
+        OR public.user_role() = 'admin'
+    )
+    WITH CHECK (
+        (select auth.uid()) = id
+        OR public.user_role() = 'admin'
+    );
 
--- Admins can update any profile
-CREATE POLICY "Admins can update all profiles"
-    ON profiles FOR UPDATE
-    USING (auth.user_role() = 'admin');
-
--- Allow profile creation during signup
-CREATE POLICY "Enable insert for authenticated users only"
+-- Insert policy for new user signup
+CREATE POLICY "profiles_insert_policy"
     ON profiles FOR INSERT
-    WITH CHECK (auth.uid() = id);
+    WITH CHECK ((select auth.uid()) = id);
 
 -- =====================================================
 -- PROJECTS POLICIES
 -- =====================================================
 
 -- Admins have full access to projects
-CREATE POLICY "Admins have full access to projects"
+CREATE POLICY "projects_admin_all_policy"
     ON projects FOR ALL
-    USING (auth.user_role() = 'admin');
+    USING (public.user_role() = 'admin');
 
 -- Workers can view projects they're assigned to
-CREATE POLICY "Workers can view assigned projects"
+CREATE POLICY "projects_worker_select_policy"
     ON projects FOR SELECT
     USING (
-        auth.user_role() = 'worker' AND
+        public.user_role() = 'worker' AND
         EXISTS (
             SELECT 1 FROM assignments
             WHERE assignments.project_id = projects.id
-            AND assignments.worker_id = auth.uid()
+            AND assignments.worker_id = (select auth.uid())
         )
     );
 
@@ -212,41 +212,44 @@ CREATE POLICY "Workers can view assigned projects"
 -- =====================================================
 
 -- Admins have full access to assignments
-CREATE POLICY "Admins have full access to assignments"
+CREATE POLICY "assignments_admin_all_policy"
     ON assignments FOR ALL
-    USING (auth.user_role() = 'admin');
+    USING (public.user_role() = 'admin');
 
 -- Workers can view their own assignments
-CREATE POLICY "Workers can view own assignments"
+CREATE POLICY "assignments_worker_select_policy"
     ON assignments FOR SELECT
-    USING (worker_id = auth.uid());
+    USING (worker_id = (select auth.uid()));
 
 -- Workers can update their own assignments (for check-in/out)
-CREATE POLICY "Workers can update own assignments"
+CREATE POLICY "assignments_worker_update_policy"
     ON assignments FOR UPDATE
-    USING (worker_id = auth.uid())
-    WITH CHECK (worker_id = auth.uid());
+    USING (worker_id = (select auth.uid()))
+    WITH CHECK (worker_id = (select auth.uid()));
 
 -- =====================================================
 -- LEADS POLICIES
 -- =====================================================
 
--- Only admins can access leads
-CREATE POLICY "Only admins can view leads"
+-- Only admins can view leads
+CREATE POLICY "leads_admin_select_policy"
     ON leads FOR SELECT
-    USING (auth.user_role() = 'admin');
+    USING (public.user_role() = 'admin');
 
-CREATE POLICY "Only admins can insert leads"
+-- Allow anonymous inserts from landing page (keep true for functionality)
+CREATE POLICY "leads_insert_policy"
     ON leads FOR INSERT
-    WITH CHECK (true); -- Allow anonymous inserts from landing page
+    WITH CHECK (true);
 
-CREATE POLICY "Only admins can update leads"
+-- Only admins can update leads
+CREATE POLICY "leads_admin_update_policy"
     ON leads FOR UPDATE
-    USING (auth.user_role() = 'admin');
+    USING (public.user_role() = 'admin');
 
-CREATE POLICY "Only admins can delete leads"
+-- Only admins can delete leads
+CREATE POLICY "leads_admin_delete_policy"
     ON leads FOR DELETE
-    USING (auth.user_role() = 'admin');
+    USING (public.user_role() = 'admin');
 
 -- =====================================================
 -- FUNCTIONS FOR DASHBOARD VIEWS
@@ -266,7 +269,7 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         a.id,
         p.name,
         p.address,
@@ -275,13 +278,13 @@ BEGIN
         p.phase,
         a.start_time,
         a.status
-    FROM assignments a
-    JOIN projects p ON a.project_id = p.id
+    FROM public.assignments a
+    JOIN public.projects p ON a.project_id = p.id
     WHERE a.worker_id = worker_uuid
     AND a.scheduled_date = CURRENT_DATE
     ORDER BY a.start_time ASC NULLS LAST;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 -- Get assignment calendar data for admin
 CREATE OR REPLACE FUNCTION get_calendar_assignments(start_date DATE, end_date DATE)
@@ -296,7 +299,7 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         a.id,
         p.id,
         p.name,
@@ -304,13 +307,13 @@ BEGIN
         pr.full_name,
         a.scheduled_date,
         a.status
-    FROM assignments a
-    JOIN projects p ON a.project_id = p.id
-    JOIN profiles pr ON a.worker_id = pr.id
+    FROM public.assignments a
+    JOIN public.projects p ON a.project_id = p.id
+    JOIN public.profiles pr ON a.worker_id = pr.id
     WHERE a.scheduled_date BETWEEN start_date AND end_date
     ORDER BY a.scheduled_date, a.start_time;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 -- =====================================================
 -- TRIGGER: Auto-create profile on user signup
@@ -327,7 +330,7 @@ BEGIN
     );
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 CREATE OR REPLACE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
